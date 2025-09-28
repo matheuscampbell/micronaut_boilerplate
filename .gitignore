@@ -1,0 +1,27 @@
+# Maven
+/target/
+**/target/
+.mvn/
+
+# IntelliJ / IDEA
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Micronaut
+build/
+
+# Docker
+**/.env
+
+# Testcontainers
+*.tc.log

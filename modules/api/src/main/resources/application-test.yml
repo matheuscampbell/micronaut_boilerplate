@@ -1,0 +1,11 @@
+micronaut:
+  application:
+    name: customers-test
+  security:
+    enabled: false
+
+kafka:
+  enabled: false
+
+rabbitmq:
+  enabled: false
