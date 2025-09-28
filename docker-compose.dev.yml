@@ -1,0 +1,72 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: customers
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  mongo:
+    image: mongo:7
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - "27017:27017"
+
+  kafka:
+    image: bitnami/kafka:3.7
+    environment:
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    ports:
+      - "9092:9092"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  minio:
+    image: minio/minio:RELEASE.2024-09-22T00-33-43Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  opensearch:
+    image: opensearchproject/opensearch:2.13.0
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.6
+    command: start-dev --http-port=8081 --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./ops/keycloak/realms:/opt/keycloak/data/import
+    ports:
+      - "8081:8081"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.105.0
+    command: ["--config=/etc/otel-collector.yaml"]
+    volumes:
+      - ./ops/otel/otel-collector.yaml:/etc/otel-collector.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"

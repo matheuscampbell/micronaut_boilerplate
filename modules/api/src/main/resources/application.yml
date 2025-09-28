@@ -1,0 +1,66 @@
+micronaut:
+  application:
+    name: customers
+  server:
+    port: 8080
+  security:
+    enabled: true
+    oauth2:
+      enabled: true
+      clients:
+        keycloak:
+          client-id: customers-api
+          client-secret: ${OAUTH_CLIENT_SECRET:secret}
+          openid:
+            issuer: http://localhost:8081/realms/dev
+  serde:
+    jackson:
+      serializationInclusion: NON_NULL
+
+endpoints:
+  swagger:
+    enabled: true
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+
+otel:
+  traces:
+    exporter: otlp
+    url: http://localhost:4318/v1/traces
+  metrics:
+    exporter: otlp
+    url: http://localhost:4318/v1/metrics
+
+kafka:
+  bootstrap:
+    servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+rabbitmq:
+  uri: ${RABBITMQ_URI:amqp://guest:guest@localhost:5672}
+
+mongodb:
+  uri: ${MONGODB_URI:mongodb://root:root@localhost:27017}
+  database: customers
+
+datasources:
+  default:
+    url: ${JDBC_URL:jdbc:postgresql://localhost:5432/customers}
+    driverClassName: org.postgresql.Driver
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+
+opensearch:
+  host: http://localhost:9200
+
+s3:
+  endpoint: http://localhost:9000
+  region: us-east-1
+  access-key: minioadmin
+  secret-key: minioadmin
+  path-style-access-enabled: true

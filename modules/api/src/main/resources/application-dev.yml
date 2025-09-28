@@ -1,0 +1,9 @@
+micronaut:
+  server:
+    port: 8080
+  security:
+    intercept-url-map:
+      - pattern: "/swagger-ui/**"
+        access: isAnonymous()
+      - pattern: "/openapi/**"
+        access: isAnonymous()
